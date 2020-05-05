@@ -9,6 +9,7 @@
   loop:
   - git
   - htop
+  - golang
   - terminator
   - dconf-editor
   - gnome-tweak-tool
