@@ -1,0 +1,18 @@
+- name: install dnf-plugins-core
+  dnf:
+    state: latest
+    name: dnf-plugins-core
+
+- name: add rpm key
+  command: rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+
+- name: install repository
+  command:
+    warn: false
+    cmd: |
+      dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
+
+- name: install brave
+  dnf:
+    state: latest
+    name: brave-browser
