@@ -1,12 +1,38 @@
-- name: install zsh
+- name: install packages
   dnf:
-    pkg: zsh
+    pkg: "{{ item }}"
+  loop:
+  - zsh
+  - util-linux-user
 
-- name: download install script
-  get_url:
-    mode: 0777
-    url: https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-    dest: /tmp/install_ohmyzsh
+- name: clone git repository
+  become: no
+  git:
+    repo: 'https://github.com/ohmyzsh/ohmyzsh.git'
+    dest: "{{ lookup('env', 'HOME') }}/.oh-my-zsh"
+    update: no
+
+- name: backup legacy .zshrc
+  copy:
+    src: "{{ lookup('env', 'HOME') }}/.zshrc"
+    dest: "{{ lookup('env', 'HOME') }}/.zshrc.backup"
 
 - name: install oh-my-zsh
-  command: sh /tmp/install_ohmyzsh
+  copy:
+    src: "{{ lookup('env', 'HOME') }}/.oh-my-zsh/templates/zshrc.zsh-template"
+    dest: "{{ lookup('env', 'HOME') }}/.zshrc"
+
+- name: get user running command
+  command: whoami
+  changed_when: no
+  become: no
+  register: whoami
+
+- name: set zsh as default shell
+  command: "chsh -s /usr/bin/zsh {{ whoami.stdout }}"
+
+- name: change default zsh theme
+  replace:
+    path: "{{ lookup('env', 'HOME') }}/.zshrc"
+    replace: 'ZSH_THEME="agnoster"'
+    regexp: 'ZSH_THEME="robbyrussell"'
