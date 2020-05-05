@@ -25,6 +25,7 @@
   - docker-ce
   - docker-ce-cli
   - containerd.io
+  - docker-compose
 
 - name: start docker
   service:
