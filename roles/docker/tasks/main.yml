@@ -25,7 +25,11 @@
   - docker-ce
   - docker-ce-cli
   - containerd.io
+  - bridge-utils
   - docker-compose
+
+- name: fix dns resolution issues
+  command: sh -c "firewall-cmd --permanent --zone=trusted --add-interface=docker0 && firewall-cmd --reload"
 
 - name: start docker
   service:
