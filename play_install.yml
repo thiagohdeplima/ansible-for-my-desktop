@@ -5,6 +5,7 @@
   - common
   - vscode
   - docker
+  - oh-my-zsh
   - browsers
   - appearance
   post_tasks:

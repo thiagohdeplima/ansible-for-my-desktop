@@ -1,0 +1,12 @@
+- name: install zsh
+  dnf:
+    pkg: zsh
+
+- name: download install script
+  get_url:
+    mode: 0777
+    url: https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    dest: /tmp/install_ohmyzsh
+
+- name: install oh-my-zsh
+  command: sh /tmp/install_ohmyzsh
