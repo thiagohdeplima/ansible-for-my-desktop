@@ -7,3 +7,7 @@
   - docker
   - browsers
   - appearance
+  post_tasks:
+  - name: clean all dependencies
+    dnf:
+      autoremove: yes
