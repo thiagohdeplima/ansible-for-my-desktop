@@ -1,0 +1,41 @@
+- name: install dnf-plugins-core
+  dnf:
+    state: latest
+    name: dnf-plugins-core
+
+- name: install docker repository
+  command:
+    warn: false
+    cmd: |
+      dnf config-manager \
+        --add-repo \
+        https://download.docker.com/linux/fedora/docker-ce.repo
+
+- name: use docker for fedora 31 for now
+  replace:
+    path: /etc/yum.repos.d/docker-ce.repo
+    replace: '31'
+    regexp: \$releasever
+
+- name: install docker
+  dnf:
+    state: present
+    name: "{{ item }}"
+  loop:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+- name: start docker
+  service:
+    name: docker
+    state: started
+
+- name: get user running command
+  command: whoami
+  changed_when: false
+  become: false
+  register: whoami
+
+- name: allow {{ whoami.stdout }} to perform docker command
+  command: "setfacl -m u:{{ whoami.stdout }}:rwx /var/run/docker.sock"
