@@ -2,10 +2,15 @@
   command: git clone https://github.com/daniruiz/flat-remix /tmp/flat-remix
 
 - name: move files to theme folder
-  command: bash -c 'mv /tmp/flat-remix/Flat-Remix-* /usr/share/icons'
+  command: bash -c 'cp -r /tmp/flat-remix/Flat-Remix-* /usr/share/icons'
 
-- name: set flat remix as default icons
-  command: gsettings set org.gnome.desktop.interface icon-theme "Flat Remix Blue Dark"
+- name: remove git repository
+  command: rm -rf /tmp/flat-remix
 
-- name: use dark theme
-  command: gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+- name: create configuration file
+  template:
+    src: 10-appearance.conf
+    dest: /etc/dconf/db/distro.d/10-appearance.conf
+
+- name: update configurations
+  command: dconf update
