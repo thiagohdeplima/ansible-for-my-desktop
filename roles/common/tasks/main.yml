@@ -1,0 +1,25 @@
+- name: upgrade all packages
+  dnf:
+    name: "*"
+    state: latest
+
+- name: install common packages
+  dnf:
+    name: "{{ item }}"
+  loop:
+  - git
+  - htop
+  - terminator
+  - gnome-tweak-tool
+
+- name: download flat remix icons
+  command: git clone https://github.com/daniruiz/flat-remix /tmp/flat-remix
+
+- name: move files to theme folder
+  command: bash -c 'mv /tmp/flat-remix/Flat-Remix-* /usr/share/icons'
+
+- name: set flat remix as default icons
+  command: gsettings set org.gnome.desktop.interface icon-theme "Flat Remix Blue Dark"
+
+- name: use dark theme
+  command: gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
