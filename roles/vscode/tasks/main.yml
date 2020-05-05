@@ -1,0 +1,12 @@
+- name: add microsoft key
+  command: sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+- name: create repository
+  template:
+    src: vscode.repo
+    dest: /etc/yum.repos.d/vscode.repo
+
+- name: install vscode
+  dnf:
+    name: code
+    state: installed
