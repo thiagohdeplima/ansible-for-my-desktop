@@ -1,6 +1,5 @@
-- hosts: localhost
+- hosts: all
   become: True
-  connection: local
   roles:
   - common
   - vscode
