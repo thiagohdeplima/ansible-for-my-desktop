@@ -31,6 +31,19 @@
 - name: fix dns resolution issues
   command: sh -c "firewall-cmd --permanent --zone=trusted --add-interface=docker0 && firewall-cmd --reload"
 
+- name: create cgroup dir
+  file:
+    path: /sys/fs/cgroup/systemd
+    state: directory
+
+- name: mount up device by label
+  mount:
+    path: /sys/fs/cgroup/systemd
+    src: cgroup
+    opts: none,name=systemd
+    fstype: cgroup
+    state: present
+
 - name: start docker
   service:
     name: docker
