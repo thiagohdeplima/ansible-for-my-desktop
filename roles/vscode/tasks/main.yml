@@ -1,5 +1,5 @@
 - name: add microsoft key
-  command: sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
 
 - name: create repository
   template:
