@@ -5,7 +5,9 @@
   command: bash -c 'cp -r /tmp/flat-remix/Flat-Remix-* /usr/share/icons'
 
 - name: remove git repository
-  command: rm -rf /tmp/flat-remix
+  file:
+    state: absent
+    path: /tmp/flat-remix
 
 - name: create configuration file
   template:
