@@ -1,3 +1,5 @@
+- include_vars: all.yml
+
 - name: upgrade all packages
   dnf:
     name: "*"
@@ -13,3 +15,8 @@
   - terminator
   - dconf-editor
   - gnome-tweak-tool
+
+- name: install virtualbox
+  dnf:
+    state: present
+    name: "{{ virtualbox_rpm_url }}"
