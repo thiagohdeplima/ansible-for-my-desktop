@@ -1,12 +1,12 @@
-- name: add microsoft key
-  command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+- name: import gpg key
+  command: rpm --import https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
 
 - name: create repository
   template:
-    src: vscode.repo
-    dest: /etc/yum.repos.d/vscode.repo
+    src: vscodium.repo
+    dest: /etc/yum.repos.d/vscodium.repo
 
 - name: install vscode
   dnf:
-    name: code
+    name: codium
     state: installed
