@@ -16,6 +16,7 @@
   copy:
     src: "{{ lookup('env', 'HOME') }}/.zshrc"
     dest: "{{ lookup('env', 'HOME') }}/.zshrc.backup"
+  ignore_errors: yes
 
 - name: install oh-my-zsh
   copy:
