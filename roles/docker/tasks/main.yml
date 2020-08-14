@@ -3,57 +3,34 @@
     state: latest
     name: dnf-plugins-core
 
-- name: install docker repository
-  command:
-    warn: false
-    cmd: |
-      dnf config-manager \
-        --add-repo \
-        https://download.docker.com/linux/fedora/docker-ce.repo
+- name: remove previous docker instalation
+  dnf:
+    state: absent
+    name: docker-*
 
-- name: use docker for fedora 31 for now
-  replace:
-    path: /etc/yum.repos.d/docker-ce.repo
-    replace: '31'
-    regexp: \$releasever
+- name: disable all docker instalation
+  command: dnf config-manager --disable docker-*
 
-- name: install docker
+- name: enable old cgroups
+  command: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+
+- name: allow docker in firewall
+  command: |
+    firewall-cmd --permanent --zone=trusted --add-interface=docker0
+    firewall-cmd --permanent --zone=FedoraWorkstation --add-masquerade
+  
+- name: install moby
   dnf:
     state: present
-    name: "{{ item }}"
-  loop:
-  - docker-ce
-  - docker-ce-cli
-  - containerd.io
-  - bridge-utils
-  - docker-compose
+    pkg:
+    - moby-engine
+    - docker-compose
 
-- name: fix dns resolution issues
-  command: sh -c "firewall-cmd --permanent --zone=trusted --add-interface=docker0 && firewall-cmd --reload"
+- name: configure service
+  command: |
+    systemctl enable docker
+    systemctl reboot
 
-- name: create cgroup dir
-  file:
-    path: /sys/fs/cgroup/systemd
-    state: directory
-
-- name: mount up device by label
-  mount:
-    path: /sys/fs/cgroup/systemd
-    src: cgroup
-    opts: none,name=systemd
-    fstype: cgroup
-    state: present
-
-- name: start docker
-  service:
-    name: docker
-    state: started
-
-- name: get user running command
-  command: whoami
-  changed_when: false
-  become: false
-  register: whoami
-
-- name: allow {{ whoami.stdout }} to perform docker command
-  command: "setfacl -m u:{{ whoami.stdout }}:rwx /var/run/docker.sock"
+- name: dont require sudo to run docker
+  command: |
+    setfacl –modify user:$USER:rw /var/run/docker.sock
