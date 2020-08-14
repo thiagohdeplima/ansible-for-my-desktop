@@ -1,0 +1,4 @@
+- name: installing chromium
+  dnf:
+    state: present
+    pkg: chromium
