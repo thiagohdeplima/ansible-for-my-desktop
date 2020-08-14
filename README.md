@@ -7,8 +7,9 @@ It assumes that hosts in inventory runs Fedora or similar. Its is tested using F
 # Running
 
 ```bash
-dnf install git
-git clone https://github.com/thiagohdeplima/ansible-for-my-desktop
 pip install ansible
-ansible-playbook -K play_install.yml
+git clone https://github.com/thiagohdeplima/ansible-for-my-desktop
+cd ansible-for-my-desktop
+pip install --user -r requirements.txt
+ansible-playbook -K play_install.yml -vvv
 ```
