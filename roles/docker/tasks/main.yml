@@ -3,20 +3,15 @@
     state: latest
     name: dnf-plugins-core
 
-- name: remove previous docker instalation
-  dnf:
-    state: absent
-    name: docker-*
-
-- name: disable all docker instalation
-  command: dnf config-manager --disable docker-*
-
 - name: enable old cgroups
   command: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
 
 - name: allow docker in firewall
   command: |
     firewall-cmd --permanent --zone=trusted --add-interface=docker0
+
+- name: allow docker in firewall
+  command: |
     firewall-cmd --permanent --zone=FedoraWorkstation --add-masquerade
   
 - name: install moby
@@ -26,11 +21,9 @@
     - moby-engine
     - docker-compose
 
-- name: configure service
-  command: |
-    systemctl enable docker
-    systemctl reboot
+- name: enable docker service
+  command: systemctl enable docker
 
 - name: dont require sudo to run docker
   command: |
-    setfacl –modify user:$USER:rw /var/run/docker.sock
+    setfacl -m user:{{ansible_user}}:rw /var/run/docker.sock
